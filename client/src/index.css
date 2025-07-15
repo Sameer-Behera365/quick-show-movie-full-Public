@@ -1,0 +1,61 @@
+/*
+🧠 Meaning of @ in CSS:
+The @ symbol in CSS is used to tell the browser 
+that this is a special instruction, 
+not a regular style like color, margin, or padding.
+These special instructions are called at-rules, 
+and they control how CSS behaves, rather than
+directly styling elements. For example, @import is used 
+to load external CSS files, @media adds responsive behavior, and @keyframes defines
+animations. So, whenever the browser sees @, it knows to expect a 
+command or rule, not just normal styling.
+
+*/
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+
+@theme{
+  --color-primary: #F84565;
+  --color-primary-dull: #D63854;
+}
+
+
+*{
+  font-family: "Outfit", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: #787777 #1e1e1e;
+}
+
+
+body{
+  color: white;
+  background-color: #09090B;
+}
+
+
+
+
+
+
+
+/* 
+
+.no-scrollbar{
+  scrollbar-width: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+} 
+    
+
+*/
