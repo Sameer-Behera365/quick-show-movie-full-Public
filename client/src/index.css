@@ -31,6 +31,7 @@ command or rule, not just normal styling.
 }
 
 
+/*body { } is a CSS rule that applies styles to the <body> tag of your HTML page.*/
 body{
   color: white;
   background-color: #09090B;
