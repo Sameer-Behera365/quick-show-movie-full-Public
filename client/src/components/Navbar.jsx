@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { MenuIcon, SearchIcon, TicketPlus, XIcon } from 'lucide-react'    //we need this for icons
 import React, { useState } from 'react'
+import { useClerk, UserButton, useUser } from '@clerk/clerk-react'
+
 
 
 
@@ -12,6 +14,11 @@ import React, { useState } from 'react'
 const Navbar = () => {
 
 const [isOpen, setIsOpen] = useState(false)     //initially false 
+const {user} = useUser()
+const {openSignIn} = useClerk()
+const navigate = useNavigate()
+
+
 
 /*
 use of the isOpen  and setIsOpen:--->
@@ -37,10 +44,10 @@ return (
 {/*----------------------- 1st column------------------------------ */}.
 
         <Link to='/' className='max-md:flex-1'>
-          <img src={assets.logo} alt="" className='w-36 h-auto'/>      
+          <img src={assets.logo} alt="" className='w-36 h-auto'/>         {/*  here h-auto means It lets the element’s height adjust automatically based on its content. */} 
+          
           {
           /*  
-
            <Link to='/'  means homepage
 
           🔸 max-md:--> This means:
@@ -60,8 +67,6 @@ return (
           here  h-auto means:-
           Automatically adjust the height to match the image’s natural shape.
           It keeps the aspect ratio correct — no squishing or stretching.
-
-        
           */}
         </Link>
 
@@ -89,23 +94,28 @@ return (
 
 <div className='flex items-center gap-8'>            {/* ➡️ Adds space between the child elements inside the flex row.   gap-8 = 2rem = 32px of spacing between each item. */}
   <SearchIcon className='max-md:hidden w-6 h-6 cursor-pointer'/>      {/*hidden on small screen and width and height is 1.5rem also on hover we get hand as the cursor  */}
-  <button  className='px-4 py-1 sm:px-7 sm:py-2 bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'>Login</button>      {/* login button */}
-          
-        
+  {
+    !user ?(
+        <button onClick={openSignIn} className='px-4 py-1 sm:px-7 sm:py-2 bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'>Login</button>
+
+    ):(
+
+      <UserButton>
+        <UserButton.MenuItems>
+            <UserButton.Action label="My Bookings" labelIcon={<TicketPlus width={15}/>} onClick={()=> navigate('/my-bookings')}/>
+        </UserButton.MenuItems>
+      </UserButton>
+      
+    )
+  }
 </div>
 
 
 
+<MenuIcon className='max-md:ml-4 md:hidden w-8 h-8 cursor-pointer' onClick={()=> setIsOpen(!isOpen)}/>    {/*   after all teh three columns we will add this icon   (☰)  in samller screens */}
 
 
-
-{/*   after all teh three columns we will add this icon   (☰)  in samller screens */}
-<MenuIcon className='max-md:ml-4 md:hidden w-8 h-8 cursor-pointer' onClick={()=> setIsOpen(!isOpen)}/>
-
-
-
-{
-/* 
+{/* 
 max-md:ml-4:----->
 max-md: means the style applies on small screens only (screen ≤ 768px).
 
