@@ -78,7 +78,7 @@ return (
 
         <XIcon className='md:hidden absolute top-6 right-6 w-6 h-6 cursor-pointer' onClick={()=> setIsOpen(!isOpen)}/>   {/* only show in small screens and Hide on medium and larger screens (≥768px)   ,   absolute: Position the icon independently inside its container.    ,  24px down from the top (top-6)     and   24px in from the right (right-6)    So it appears in the top-right corner, often used to close mobile menus or sidebars.    ,   Width and height = 1.5rem (24px)    ,    When you hover, the mouse becomes a hand icon, meaning it’s clickable.    */}          {/*  shows a close (X) icon — used to close menus, modals, or sidebars. */}
 
-        <Link onClick={()=> {scrollTo(0,0); setIsOpen(false)}} to='/'>Home</Link>
+        <Link onClick={()=> {scrollTo(0,0); setIsOpen(false)}} to='/'>Home</Link>                   {/* The semicolon separates multiple statements inside the {} block , here  we are using 2 functions inside onClick   */}
         <Link onClick={()=> {scrollTo(0,0); setIsOpen(false)}} to='/movies'>Movies</Link>
         <Link onClick={()=> {scrollTo(0,0); setIsOpen(false)}} to='/'>Theaters</Link>
         <Link onClick={()=> {scrollTo(0,0); setIsOpen(false)}} to='/'>Releases</Link>
