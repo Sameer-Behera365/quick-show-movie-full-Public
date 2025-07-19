@@ -18,10 +18,27 @@ command or rule, not just normal styling.
 @import "tailwindcss";
 
 
+
+
 @theme{
-  --color-primary: #F84565;
+  --color-primary: #f84565;
   --color-primary-dull: #D63854;
 }
+
+
+/*
+| Color                  | Use case               | Why?                         |
+| ---------------------- | ---------------------- | ---------------------------- |
+| `--color-primary`      | Normal state (default) | Bright and grabs attention   |
+| `--color-primary-dull` | Hover/active state     | Slightly darker for feedback |
+
+we changed  this to our own color for styling
+we will use them whenever we want these shades like in the blurcirlce and text color
+
+*/
+
+
+
 
 
 *{
@@ -38,6 +55,11 @@ body{
 }
 
 
+/*  this is for the scroll bar hiding in the movie cast section of moviesdetails.jsx*/
+.no-scrollbar{
+  scrollbar-width: none;
+}
+
 
 
 
@@ -45,9 +67,6 @@ body{
 
 /* 
 
-.no-scrollbar{
-  scrollbar-width: none;
-}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

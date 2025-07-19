@@ -71,6 +71,8 @@ Hooks must be called at the top level of a functional component.
   return (
     <>
     <Toaster/>
+
+
     {/*
 
     You write <Toaster /> once in your app, usually at the top level.
@@ -84,18 +86,15 @@ Hooks must be called at the top level of a functional component.
 
 ✅ It’s available throughout the whole app.
 ✅ Any toast message from any page or component can be displayed.
-❌ If you put it deep inside a component, toasts from other places won’t show.
-
-
-    
+❌ If you put it deep inside a component, toasts from other places won’t show.    
     */}
+
+
+
 
     {!isAdminRoute && <Navbar/>}                
 
-    {/*➡️ “If isAdminRoute is false, then show the <Navbar /> component.”
-    In simple words:
-    ✅ Show Navbar only on non-admin pages.
-    ❌ Hide it when the URL starts with /admin. */}
+    {/*➡️ “If isAdminRoute is false, then show the <Navbar /> component.”   In simple words:   ✅ Show Navbar only on non-admin pages.     ❌ Hide it when the URL starts with /admin. */}
 
 
      <Routes>

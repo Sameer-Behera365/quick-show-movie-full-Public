@@ -94,7 +94,7 @@ export const dummyShowsData = [
         "vote_average": 6.405,
         "vote_count": 18000,
         "runtime": 103,
-    },
+    }, 
     {
         "_id": "552524",
         "id": 552524,
