@@ -19,8 +19,11 @@ import DateSelect from '../components/DateSelect'
 
 const MovieDetails = () => {
 
+
+  const navigate = useNavigate()
   const {id} = useParams()     //for getting the id value from url
   const [show, setShow] = useState(null)
+  
 
   const getShow = async()=>{
     const lala=dummyShowsData.find(show=> show._id  === id )
@@ -134,7 +137,6 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 <div className='overflow-x-auto no-scrollbar mt-8 pb-4'>       {/*  overflow-x-auto means  📦 Real Example:  Imagine you have a row of 15 cast cards side by side:   If the screen is too small to show all 15 cards, this class:  Does NOT cut them off   Instead, it adds a horizontal scroll bar so you can swipe/scroll left–right */}
   <div className='flex items-center gap-4 w-max px-4'>      {/* flex in row  */}
     {
-
       show.movie.casts.slice(0, 12).map((cast, index) => (            //max 12 memebers
       <div key={index} className='flex flex-col items-center text-center'>
         <img 
@@ -145,7 +147,6 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
         <p className='font-medium text-xs mt-3'>{cast.name}</p>
       </div>
     ))
-    
     }
   </div>
 </div>
@@ -157,6 +158,23 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 <DateSelect dateTime={show.dateTime} id={id}/>
 
 
+
+{/*  u may also like section the cards */}
+
+      <p className='text-lg font-medium mt-20 mb-8'>You May Also Like</p>
+      <div className='flex flex-wrap max-sm:justify-center gap-8'>
+          {dummyShowsData.slice(0,4).map((movie, index)=> (
+            <MovieCard key={index} movie={movie}/>   //each moviie card should be unique that why we used key={ }
+          ))}
+      </div>
+      <div className='flex justify-center mt-20'>
+          <button 
+          onClick={()=> {navigate('/movies'); scrollTo(0,0)}} 
+          className='px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer'
+          >
+          Show more
+          </button>
+      </div>
 
 
 
