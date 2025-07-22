@@ -8,9 +8,7 @@ import timeFormat from '../lib/timeFormat'
 import MovieCard from '../components/MovieCard'
 import toast from 'react-hot-toast'
 import DateSelect from '../components/DateSelect'
-
-
-// import Loading from '../components/Loading'
+import Loading from '../components/Loading'
 // import { useAppContext } from '../context/AppContext'
 
 
@@ -26,18 +24,41 @@ const MovieDetails = () => {
   
 
   const getShow = async()=>{
-    const lala=dummyShowsData.find(show=> show._id  === id )
-    setShow({
-      movie:lala,
-      dateTime:dummyDateTimeData
+    const lala=dummyShowsData.find(show=> show._id  === id )    // what if dummyShowsData.find(...) does not find the show, i.e., if lala becomes undefined.
+
+    if(lala)
+    {
+      setShow({
+      movie:lala,        
+      dateTime:dummyDateTimeData     //here in dummy data wew will use teh same datetime values for all movies
+
     })
-  }
+    }
+  }   //end of getshow functon
 
-  //here in dummy data wew will use teh same datetime values for all movies
 
-  useEffect(()=>{
+
+ /*   whrn we dont find any valid    movie then it will give undefined for thso show._id  === id , 
+  here say the  movie is undefnind
+  so:-
+  setShow({
+  movie: undefined,
+  dateTime: dummyDateTimeData
+  });
+
+
+Now this means show exists (not null), so show ? (...) : (...) will render the main UI  noth the second div
+thats why we used if ()  condition
+    */
+
+ 
+
+useEffect(()=>{
     getShow()
-  },[id])
+},[id])
+
+
+
 
 
 
@@ -159,7 +180,7 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 
 
 
-{/*  u may also like section the cards */}
+      {/*   u may also like section the cards */}
 
       <p className='text-lg font-medium mt-20 mb-8'>You May Also Like</p>
       <div className='flex flex-wrap max-sm:justify-center gap-8'>
@@ -180,7 +201,7 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 
 </div>
 
-) : <div>Loading...</div>
+) : <Loading />
 }
 
 export default MovieDetails
