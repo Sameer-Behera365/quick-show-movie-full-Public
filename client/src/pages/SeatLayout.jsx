@@ -28,8 +28,8 @@ const SeatLayout = () => {
   const { id, date } = useParams()                                // 👉 Gets `id` and `date` from the URL (e.g., /book/123/2025-07-22)
   const [selectedTime, setSelectedTime] = useState(null)          // 👉 Stores the time selected by user (starts as null)
   const [show, setShow] = useState(null)                          // 👉 Stores the movie details                              
-  const [selectedSeats, setSelectedSeats] = useState([])          // 👉 Stores which seats the user selects (array like ["A1", "A2"])
-  const [occupiedSeats, setOccupiedSeats] = useState([])          // 👉 Stores seats already booked by others (disabled seats)
+  const [selectedSeats, setSelectedSeats] = useState([])          // 👉 Stores which seats the user selects (array like ["A1", "A2"])   iniyially its empty
+  const [occupiedSeats, setOccupiedSeats] = useState([])          // 👉 Stores seats already booked by others (disabled seats)         initially its empty
   
 
 

@@ -65,8 +65,7 @@ body{
 
 
 
-/* 
-
+/* in admin/add-shows   we need to remove theupa nd down arrow  in show price box   and  also   add  calender  icon in select date and time   */
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -78,4 +77,3 @@ input::-webkit-inner-spin-button {
 } 
     
 
-*/

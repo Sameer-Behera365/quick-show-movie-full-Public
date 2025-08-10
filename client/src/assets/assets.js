@@ -55,6 +55,9 @@ const dummyCastsData = [
     { "name": "Tomasz Cymerman", "profile_path": "https://image.tmdb.org/t/p/original/nTSPtzWu6deZTJtWXHUpACVznY4.jpg", }
 ]
 
+
+
+
 export const dummyShowsData = [
     {
         "_id": "324544",
@@ -197,7 +200,7 @@ export const dummyShowsData = [
         "runtime": 127,
     }
 ]
-
+ 
 export const dummyDateTimeData = {
     "2025-07-24": [
         { "time": "2025-07-24T01:00:00.000Z", "showId": "68395b407f6329be2bb45bd1" },
@@ -306,6 +309,10 @@ export const dummyBookingData = [
         "bookedSeats": ["D1", "D2"],
         "isPaid": false,
     },
+
+
+
+
     {
         "_id": "68396334fb83252d82e17295",
         "user": { "name": "GreatStack", },
@@ -319,6 +326,12 @@ export const dummyBookingData = [
         "bookedSeats": ["A1"],
         "isPaid": true,
     },
+
+
+
+
+    
+
     {
         "_id": "68396334fb83252d82e17295",
         "user": { "name": "GreatStack", },
