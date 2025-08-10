@@ -22,7 +22,8 @@ import express from 'express'; // Express framework for creating the backend ser
 import cors from 'cors';       // allow frontend and backend to talk to each other   gives you cors()
 import 'dotenv/config';        // Loads environment variables from a .env file
 import connectDB from './configs/db.js';
-
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js"
 import { clerkMiddleware } from '@clerk/express';
 
 
@@ -88,6 +89,8 @@ app.use(clerkMiddleware());                //clerk middleware  here it means   t
 
 // -------- ROUTES --------   This is a simple GET API endpoint at the root URL ('/')    When someone visits http://localhost:3000/ in a browser, it sends back "Server is Live!"
 app.get('/', (req, res) => res.send('Server is Live!'));
+app.use('/api/inngest', serve({ client: inngest, functions }))      // defining an API enpoint at the    --> path /api/innhest
+
 
 
 
