@@ -81,7 +81,7 @@ const syncUserUpdation = inngest.createFunction(
 export const functions = [                 
     syncUserCreation,
     syncUserDeletion,
-    // syncUserUpdation,
+    syncUserUpdation,
     // releaseSeatsAndDeleteBooking,
     // sendBookingConfirmationEmail,
     // sendShowReminders,
