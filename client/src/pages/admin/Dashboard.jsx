@@ -6,14 +6,12 @@ import Title from '../../components/admin/Title';
 import BlurCircle from '../../components/BlurCircle';
 import { dateFormat } from '../../lib/dateFormat';
 import toast from 'react-hot-toast';
- 
+import { useAppContext } from '../../context/AppContext';
 
 
-// import { useAppContext } from '../../context/AppContext';
 
 const Dashboard = () => {
-
-    // const {axios, getToken, user, image_base_url} = useAppContext()
+    const {axios, getToken, image_base_url} = useAppContext()
 
     const currency = import.meta.env.VITE_CURRENCY
 
@@ -38,11 +36,30 @@ const Dashboard = () => {
 
 
 
-    const fetchDashboardData = async () => {
-      setDashboardData(dummyDashboardData)
-      setLoading(false)
-    };
 
+
+
+
+    
+    const fetchDashboardData = async () => {
+        try {
+           const { data } = await axios.get("/api/admin/dashboard", {headers: { Authorization: `Bearer ${await getToken()}`}}) 
+           if (data.success) {
+            setDashboardData(data.dashboardData)
+            setLoading(false)
+           }else{
+            toast.error(data.message)
+           }
+        } catch (error) {
+            toast.error("Error fetching dashboard data:", error)
+        }
+    }
+
+
+
+
+
+    
 
 
 
@@ -114,7 +131,7 @@ const Dashboard = () => {
 
             {/* Movie poster image */}
             <img
-              src={show.movie.poster_path}
+              src={image_base_url + show.movie.poster_path}
               alt=""
               className="h-60 w-full object-cover"
             />

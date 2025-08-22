@@ -1,6 +1,6 @@
 /*
 
-This 
+This  
 
 Lets a user view their bookings
 Lets them mark/unmark movies as favorites
@@ -25,7 +25,7 @@ It sends back the list of bookings, showing the latest one first.
 */
 
 
-
+ 
 export const getUserBookings = async (req, res)=>{     //URL  WILL  LOOK  SOMETHING LIKE THIS  FOR REQ OF  THIS  FUNCTION :- e.g. https://yourapp.com/api/user/bookings)
 
     try {
@@ -117,4 +117,4 @@ export const getFavorites = async (req, res) =>{
         console.error(error.message);
         res.json({ success: false, message: error.message });
     }
-}
+} 

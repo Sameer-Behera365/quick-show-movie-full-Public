@@ -11,9 +11,10 @@ adminRouter.get('/all-bookings', protectAdmin, getAllBookings)
 
 export default adminRouter; 
 
+ 
 
 
-/* 
+/*  
 admin routes will look like :----
 
 Check if user is admin

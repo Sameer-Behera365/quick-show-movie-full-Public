@@ -5,7 +5,7 @@ import BlurCircle from '../components/BlurCircle'
 import timeFormat from '../lib/timeFormat'
 import { Link } from 'react-router-dom'
 import { dateFormat } from '../lib/dateFormat'
-// import { useAppContext } from '../context/AppContext'
+import { useAppContext } from '../context/AppContext'
 
 
 
@@ -14,19 +14,39 @@ import { dateFormat } from '../lib/dateFormat'
 const MyBookings = () => {
     const currency = import.meta.env.VITE_CURRENCY
 
+  const { axios, getToken, user, image_base_url} = useAppContext()
+
 
       const [bookings, setBookings] = useState([])       //booking will be empty array initially(or  also called bookings state is wmpty array)
       const [isLoading, setIsLoading] = useState(true)
 
-      const getMyBookings=async()=>{
-        setBookings(dummyBookingData)
-        setIsLoading(false)
-      }
+
+
+
+  const getMyBookings = async () =>{
+    try {
+      const {data} = await axios.get('/api/user/bookings', {
+        headers: { Authorization: `Bearer ${await getToken()}` }
+      })
+        if (data.success) {
+          setBookings(data.bookings)
+        }
+
+    } catch (error) {
+      console.log(error)
+    }
+    setIsLoading(false)
+  }
+
+
+
 
 
       useEffect(()=>{
+        if(user){    //eif  statetment is for see if user is looged in then only run thsi function     and    everytime teh user changes it will call this again because of  [user]    actually u can remove that if statement it not needed actually  cause afetr login button presss only u will see the logo and able to click my bookingd
         getMyBookings()
-      },[])
+      }
+      },[user])
 
 
 
@@ -94,7 +114,7 @@ const MyBookings = () => {
           <div className='flex flex-col md:flex-row'>                   {/*  easy explanation  see    (movie poster )   and    ( title,duration,showtime)       to  be in   row wise  in big scrren  we used  flex -row  for that        and    we them in column wise in small screens  so we usee  flex-col               ,        u try urself by  removing   md:flex-row    u see teh difference    */}
             {/* Movie poster */}
             <img 
-              src={ item.show.movie.poster_path} 
+              src={ image_base_url  + item.show.movie.poster_path} 
               alt="" 
               className='md:max-w-45 aspect-video h-auto object-cover object-bottom rounded'
             />
@@ -145,29 +165,6 @@ export default MyBookings
 
 
 
-
-/*
-            <div className='flex flex-col p-4'>
-              <p className='text-lg font-semibold'>{item.show.movie.title}</p>
-              <p className='text-gray-400 text-sm'>{timeFormat(item.show.movie.runtime)}</p>
-              <p className='text-gray-400 text-sm mt-auto'>{dateFormat(item.show.showDateTime)}</p>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-
-*/
 
 
 

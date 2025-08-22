@@ -25,17 +25,20 @@ import showRouter from './routes/showRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
-// import { stripeWebhooks } from './controllers/stripeWebhooks.js';
-
-
-
+import { stripeWebhooks } from './controllers/stripeWebhooks.js';
 
 
 
 
 // Create an Express app instance
 const app = express();
-const port = 3000; // Port number where the server will run
+const port = 3000; 
+
+
+
+
+// Stripe Webhooks Route     and why we placing it before middle ware is because:-   Because Stripe needs the raw request body to verify the webhook signature, and express.json() (and other middleware) would modify it. So the webhook route must be placed before those middlewares.
+app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks)
 
 
 
@@ -48,8 +51,6 @@ Why this is important:  Without it, your server might start before MongoDB is re
 That can cause errors if a route tries to read/write from the DB while the connection isn’t open yet.
 */
  
-
-
 
 
 
@@ -77,15 +78,7 @@ express.json() = translator that opens JSON and puts it into req.body.
 Backend on localhost:3000, frontend on localhost:5173.
 Browsers block requests between different addresses (CORS policy).
 cors() = “It’s okay, this other address is allowed to talk to me.”
-*/
 
-
-
-
-
-
-
-/*
 
 
 
@@ -104,20 +97,13 @@ So by the time your request reaches userController.js, the middleware has alread
 That’s why you don’t import clerkMiddleware again in each controller — it’s already applied once globally.
 👉 Think of it like a security guard at the gate: you only place him once at the entrance (example:- server.js), not in every room (example:- userController.js).
 
-
 */
 
 
 
-/* -------- ROUTES --------  
-
-app.get(path, handler)
-means: “When the server receives a GET request to this exact path, run the given
-
-app.use(path, routerOrMiddleware)
-means: “For any request starting with path, pass control to the given router or middleware.”
-
-
+/* -------- ROUTES --------   
+app.get(path, handler)    means: “When the server receives a GET request to this exact path, run the given
+app.use(path, routerOrMiddleware)    means: “For any request starting with path, pass control to the given router or middleware.”
 */ 
 
 app.get('/', (req, res) => res.send('Server is Live!'));
@@ -192,53 +178,5 @@ A storage room where events are saved until you’re ready.
 A retry system — it keeps trying until you successfully process it.
 A logbook — you can see every event in history.
 A traffic manager — it won’t overload your server.
-
-
-
-
-
-
-
-
-import express from 'express';
-import cors from 'cors';
-import 'dotenv/config';
-import connectDB from './configs/db.js';
-import { clerkMiddleware } from '@clerk/express'
-import { serve } from "inngest/express";
-import { inngest, functions } from "./inngest/index.js"
-import showRouter from './routes/showRoutes.js';
-import bookingRouter from './routes/bookingRoutes.js';
-import adminRouter from './routes/adminRoutes.js';
-import userRouter from './routes/userRoutes.js';
-import { stripeWebhooks } from './controllers/stripeWebhooks.js';
-
-const app = express();
-const port = 3000;
-
-await connectDB()
-
-// Stripe Webhooks Route
-app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks)
-
-// Middleware
-app.use(express.json())
-app.use(cors())
-app.use(clerkMiddleware())
-
-
-// API Routes
-app.get('/', (req, res)=> res.send('Server is Live!'))
-app.use('/api/inngest', serve({ client: inngest, functions }))
-app.use('/api/show', showRouter)
-app.use('/api/booking', bookingRouter)
-app.use('/api/admin', adminRouter)
-app.use('/api/user', userRouter)
-
-
-app.listen(port, ()=> console.log(`Server listening at http://localhost:${port}`));
-
-
-
 
 */

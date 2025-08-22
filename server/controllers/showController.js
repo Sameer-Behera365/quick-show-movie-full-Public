@@ -84,7 +84,7 @@ this way of writing the code we got it from the now playing tmdb section code  w
 
 
 
-
+ 
 
  
 // API to get now playing movies from TMDB API    ------>    just for loooking by admin  that   Gets a list of movies that are currently in theaters              then  he decides which one to aff    by  using addshow functionm
@@ -139,7 +139,7 @@ export const addShow = async (req, res) =>{
 
             //Here you are picking the specific fields from the API data and shaping them into an object that matches your MongoDB schema.
              const movieDetails = {
-                _id: movieId,
+                _id: movieId,                                   //Your movies don’t have Mongo ObjectIds because you are overriding _id with the TMDB movieId. If you want ObjectIds, stop setting _id manually and instead use a separate field like tmdbId.
                 title: movieApiData.title,
                 overview: movieApiData.overview,
                 poster_path: movieApiData.poster_path,
@@ -160,6 +160,7 @@ export const addShow = async (req, res) =>{
 
 
         //we make an  object where  we  put a   particular show  all dates and  time  combinations
+        //duplicates can enter easily  .push() does not prevent duplicates — it just adds whatever you tell it to the array.
         const showsToCreate = [];
         showsInput.forEach(show => {
             const showDate = show.date;                   // e.g., "2025-08-20"
@@ -228,7 +229,7 @@ So the “add movie” step only happens when the movie isn’t already stored.
 */
 
 
-
+ 
 
 
 
@@ -244,9 +245,9 @@ export const getShows = async (req, res) =>{
         console.error(error);
         res.json({ success: false, message: error.message });
     }
-}
+} 
 
-
+ 
 
 
 
@@ -279,9 +280,7 @@ export const getShow = async (req, res) =>{
         res.json({success: true, movie, dateTime})
     } 
 
-
-
-
+    
     /*
     
     success json response                     res.json({success: true, movie, dateTime})         will look like this:-       

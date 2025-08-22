@@ -3,38 +3,35 @@ import { dummyShowsData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/Title';
 import { dateFormat } from '../../lib/dateFormat';
-// import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/AppContext';
 
 const ListShows = () => {
 
     const currency = import.meta.env.VITE_CURRENCY
 
-    // const {axios, getToken, user} = useAppContext()
+    const {axios, getToken} = useAppContext()
 
     const [shows, setShows] = useState([]);           //here shows  is  an array of objects  
     const [loading, setLoading] = useState(true);
 
-    const getAllShows = async () =>{
-        try 
-        {
-          setShows([{         //see here each eleemnt is an object here underatand 
-            movie:dummyShowsData[0],
-            showDateTime:"2025-06-30T02:30:00.000Z",
-            showPrice:59,
-            occupiedSeats:{    //here in string we wrote some names like user1,user2..etc  as the saets booked by a person
-              A1:"user_1",
-              B1:"user_2",
-              C1:"user_3"
-            }
-          }]);
-          setLoading(false);
-        }    
 
-        catch (error) 
-        {
+
+
+
+
+// thsi one will give us all teh shows present in show database
+   const getAllShows = async () =>{
+        try {
+            const { data } = await axios.get("/api/admin/all-shows", {
+                headers: { Authorization: `Bearer ${await getToken()}` }
+            });
+            setShows(data.shows)
+            setLoading(false);
+        } catch (error) {
             console.error(error);
         }
     }
+
 
 
 
@@ -69,7 +66,7 @@ const ListShows = () => {
                 <tr className="bg-primary/20 text-left text-white">
                     <th className="p-2 font-medium pl-5">Movie Name</th>
                     <th className="p-2 font-medium">Show Time</th>
-                    <th className="p-2 font-medium">Total Bookings</th>
+                    <th className="p-2 font-medium">Total seats Booked</th>
                     <th className="p-2 font-medium">Earnings</th>
                 </tr>
             </thead>

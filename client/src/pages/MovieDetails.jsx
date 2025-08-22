@@ -9,20 +9,20 @@ import MovieCard from '../components/MovieCard'
 import toast from 'react-hot-toast'
 import DateSelect from '../components/DateSelect'
 import Loading from '../components/Loading'
-// import { useAppContext } from '../context/AppContext'
+import { useAppContext } from '../context/AppContext'
 
 
 
 
 
 const MovieDetails = () => {
-
-
+  const {shows, axios, getToken, user, fetchFavoriteMovies, favoriteMovies, image_base_url} = useAppContext()
   const navigate = useNavigate()
   const {id} = useParams()     //for getting the id value from url
   const [show, setShow] = useState(null)
   
 
+  /*
   const getShow = async()=>{
     const lala=dummyShowsData.find(show=> show._id  === id )    // what if dummyShowsData.find(...) does not find the show, i.e., if lala becomes undefined.
 
@@ -34,13 +34,14 @@ const MovieDetails = () => {
 
     })
     }
-  }   //end of getshow functon
+  }   
 
 
 
- /*   whrn we dont find any valid    movie then it will give undefined for thso show._id  === id , 
+ whrn we dont find any valid    movie then it will give undefined for thso show._id  === id , 
   here say the  movie is undefnind
   so:-
+
   setShow({
   movie: undefined,
   dateTime: dummyDateTimeData
@@ -49,7 +50,43 @@ const MovieDetails = () => {
 
 Now this means show exists (not null), so show ? (...) : (...) will render the main UI  noth the second div
 thats why we used if ()  condition
-    */
+  */
+
+
+
+
+
+
+  const getShow = async ()=>{
+    try {
+      const { data } = await axios.get(`/api/show/${id}`)
+      if(data.success){
+        setShow(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+
+  const handleFavorite = async ()=>{
+    try {
+      if(!user) return toast.error("Please login to proceed");
+
+      const { data } = await axios.post('/api/user/update-favorite', {movieId: id}, {headers: { Authorization: `Bearer ${await getToken()}` }})
+
+      if(data.success){
+        await fetchFavoriteMovies()     //this will activate the  usestate variable  favoriteMovies  which we imported from appcontext
+        toast.success(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
 
  
 
@@ -73,23 +110,10 @@ return show?(
     
      {/* ⬅️ Movie Poster */}
       <img 
-        src={show.movie.poster_path}        
-/*
-understand   :-   show.movie.poster_path
-
-show is your state variable from useState
-
-It holds an object with:
-movie: movie data
-dateTime: date/time info
-
-You access parts of it like show.movie.title, show.movie.poster_path, etc. 
-*/
+        src={image_base_url + show.movie.poster_path}        
         alt="" 
         className='max-md:mx-auto rounded-xl h-104 max-w-70 object-cover'
       />
-
-
 
 
 
@@ -139,8 +163,8 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 
 
             {/* ❤️ Favorite Button */}
-          <button  className='bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95'>      {/*     active: → When the user clicks and holds the element      scale-95 → Shrink the element to 95% of its original size */}
-            <Heart/>
+            <button onClick={handleFavorite} className='bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95'>   {/*     active: → When the user clicks and holds the element      scale-95 → Shrink the element to 95% of its original size */}
+              <Heart className={`${favoriteMovies.find(movie => movie._id === id) ? 'fill-primary text-primary' : ""} `}/>
           </button>
 
         </div>
@@ -161,7 +185,7 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
       show.movie.casts.slice(0, 12).map((cast, index) => (            //max 12 memebers
       <div key={index} className='flex flex-col items-center text-center'>
         <img 
-          src={cast.profile_path} 
+          src={image_base_url + cast.profile_path} 
           alt="" 
           className='rounded-full h-20 md:h-20 aspect-square object-cover'
         />
@@ -184,7 +208,7 @@ You access parts of it like show.movie.title, show.movie.poster_path, etc.
 
       <p className='text-lg font-medium mt-20 mb-8'>You May Also Like</p>
       <div className='flex flex-wrap max-sm:justify-center gap-8'>
-          {dummyShowsData.slice(0,4).map((movie, index)=> (
+          {shows.slice(0,4).map((movie, index)=> (
             <MovieCard key={index} movie={movie}/>   //each moviie card should be unique that why we used key={ }
           ))}
       </div>
@@ -299,7 +323,6 @@ banana 1
 mango  2
 
 */
-
 
 
 

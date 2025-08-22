@@ -1,7 +1,7 @@
 import { inngest } from "../inngest/index.js";
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js"
-// import stripe from 'stripe'
+import stripe from 'stripe'
 
 
 // Function to check availability of selected seats for a movie
@@ -15,7 +15,7 @@ const checkSeatsAvailability = async (showId, selectedSeats)=>{
         const isAnySeatTaken = selectedSeats.some(seat => occupiedSeats[seat]);  
         //  .some() → Checks if at least one item in the array meets the condition and returns true if it does, otherwise false.
         // occupiedSeats is an object like:    { "A1": true, "A2": true, "B5": true }    If in occupiedSeats and has true, it means that seat is already taken.
-        //  if  any one seat is occupied then it will do isAnySeatTaken = true;
+        //  if  any one seat is occupied then it will make  isAnySeatTaken = true;
 
         return !isAnySeatTaken;
     } 
@@ -28,25 +28,12 @@ const checkSeatsAvailability = async (showId, selectedSeats)=>{
 }
 
 
-
-/*
-
-
-createBooking handles seat availability check,
-creates a booking record, marks seats as occupied, 
-sets up Stripe payment, and returns the payment link.
+ 
 
 
- req.body  will look like this:-
-{
-  "showId": "66b9b2f5c94df4a1a2a1234",
-  "selectedSeats": ["A1", "A2", "B5"]
-}
 
-*/
 
-export const createBooking = async (req, res)=>{                        //here  urll  is   something  like this  POST http://localhost:3000/api/booking/create
-
+export const createBooking = async (req, res)=>{                   
 
     try {
         const {userId} = req.auth();   
@@ -62,12 +49,8 @@ export const createBooking = async (req, res)=>{                        //here  
         }
 
 
-
-
         // Get the show details 
         const showData = await Show.findById(showId).populate('movie');
-
-
 
         // Create a new booking
         const booking = await Booking.create({
@@ -79,18 +62,14 @@ export const createBooking = async (req, res)=>{                        //here  
 
         //now  we need to reserve these seats  in show .js  for thsi movieid so we are doing this
         selectedSeats.map((seat)=>{    
-            showData.occupiedSeats[seat] = userId;
+            showData.occupiedSeats[seat] = userId;              //it will look like this  A1:33223443344    A2:847477447y47y47   here    meaning  is  seat no :  userid
         })
 
         showData.markModified('occupiedSeats');   
         await showData.save();
 
-
-
-         /*
-
-
-         // Stripe Gateway Initialize
+         
+//============================================================================================ Stripe Gateway Initialize
          const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
 
          // Creating line items to for Stripe
@@ -105,38 +84,32 @@ export const createBooking = async (req, res)=>{                        //here  
             quantity: 1
          }]
 
+
+
+//payment session
          const session = await stripeInstance.checkout.sessions.create({
-            success_url: `${origin}/loading/my-bookings`,
-            cancel_url: `${origin}/my-bookings`,
+            success_url: `${origin}/loading/my-bookings`,                   
+            cancel_url: `${origin}/my-bookings`,                            
             line_items: line_items,
             mode: 'payment',
             metadata: {
                 bookingId: booking._id.toString()
             },
-            expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // Expires in 30 minutes
+            expires_at: Math.floor(Date.now() / 1000) + 30 * 60
          })
+
+
+
+
 
          booking.paymentLink = session.url
-         await booking.save()
+         await booking.save()                   //we will save the booking in mongodb
 
-         // Run Inngest Sheduler Function to check payment status after 10 minutes
-         await inngest.send({
-            name: "app/checkpayment",
-            data: {
-                bookingId: booking._id.toString()
-            }
-         })
+
+
 
          res.json({success: true, url: session.url})
-
-
-
-         */
-
-
-
-
-        res.json({success: true, message:'booked successfully'})
+// end  of stripe things ============================================================================================================================================
     } 
     
     catch (error)
@@ -152,16 +125,11 @@ export const createBooking = async (req, res)=>{                        //here  
 
 
 
-export const getOccupiedSeats = async (req, res)=>{
+export const getOccupiedSeats = async (req, res)=>{                 //here the url will look like this  :- http://localhost:5000/api/booking/seats/:showId
     try {
-
-        //here req  url is like this:-    GET    http://localhost:3000/api/booking/seats/64f3a7f23b0b2d45a9e7d0a5
-
-        const {showId} = req.params;
+        const {showId} = req.params;    //we get showId= req.params.showId
         const showData = await Show.findById(showId)
-
         const occupiedSeats = Object.keys(showData.occupiedSeats)
-
         res.json({success: true, occupiedSeats})    
         /*
         
@@ -171,12 +139,12 @@ export const getOccupiedSeats = async (req, res)=>{
          "B5": true
         }
 
-
         Object.keys(showData.occupiedSeats)   will give  ["A1", "A2", "B5"]
-        
         */
+    } 
 
-    } catch (error) {
+    catch (error) 
+    {
         console.log(error.message);
         res.json({success: false, message: error.message})
     }

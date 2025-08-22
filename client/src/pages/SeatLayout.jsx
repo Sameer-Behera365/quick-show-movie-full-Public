@@ -8,20 +8,17 @@ import { ArrowRightIcon, ClockIcon } from 'lucide-react'
 import isoTimeFormat from '../lib/isoTimeFormat'
 import BlurCircle from '../components/BlurCircle'
 import toast from 'react-hot-toast'
+import { useAppContext } from '../context/AppContext'
 
 
 
 
 const SeatLayout = () => {
-
+  const {axios, getToken, user} = useAppContext();
   const navigate = useNavigate()
-
 
     // Seat rows divided into 5 groups
   const groupRows = [["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]]       //js  is flexible   u can create  arrays  like this  no  need different  synatx  lik in   c++
-
-
-
 
 
    
@@ -31,52 +28,35 @@ const SeatLayout = () => {
   const [selectedSeats, setSelectedSeats] = useState([])          // 👉 Stores which seats the user selects (array like ["A1", "A2"])   iniyially its empty
   const [occupiedSeats, setOccupiedSeats] = useState([])          // 👉 Stores seats already booked by others (disabled seats)         initially its empty
   
+ 
+
+
+//It searches the database for the movie with the matching _id.  If found, it sets the movie and dummy show times in the show state.
+  const getShow = async () =>{
+    try {
+      const { data } = await axios.get(`/api/show/${id}`)
+      if (data.success){
+        setShow(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
 
-    /*
-It searches the dummy show data for the movie with the matching _id.
-If found, it sets the movie and dummy show times in the show state.
-  */
-  const getShow = async () => {
-  const show = dummyShowsData.find(show => show._id === id)
-  if (show) {
-    setShow({
-      movie: show,
-      dateTime: dummyDateTimeData
-    })
-  }}
 
 
 
 
+const handleSeatClick = (seatId) =>{
+if (!selectedTime)  return toast("Please select time first")             //Checks if the user has not selected a showtime yet.
 
-// Handle seat selection logic with validation   thsi It's called when a seat is clicked.
-
-  const handleSeatClick = (seatId) =>{
-
-
- //Checks if the user has not selected a showtime yet.
-  if (!selectedTime)  return toast("Please select time first")   
+if (!selectedSeats.includes(seatId) && selectedSeats.length > 4)          //  meaning of thsi if block:-   If the seat is not already selected,    And the user has already picked 5 seats,    Then show a message: “You can only select 5 seats”.              
+{  return toast("You can only select 5 seats")  }
 
 
-
-/*  meaning of thsi if block:-
-If the seat is not already selected,
-And the user has already picked 5 seats,
-Then show a message: “You can only select 5 seats”.            
-*/
-
-if (!selectedSeats.includes(seatId) && selectedSeats.length > 4) 
-        {  return toast("You can only select 5 seats")  }
-
-
-
-//If the seat is already booked, we show a message: “This seat is already booked”.
-if (occupiedSeats.includes(seatId)) return toast('This seat is already booked')   
-      
-
-
+if (occupiedSeats.includes(seatId)) return toast('This seat is already booked')    //If the seat is already booked, we show a message: “This seat is already booked”.
 
       setSelectedSeats(prev =>                         //look here prev is automatically the last known value of selectedSeats.
         prev.includes(seatId)                          //prev is the previous value of selectedSeats.  Example: ["A1", "A2"]
@@ -84,8 +64,6 @@ if (occupiedSeats.includes(seatId)) return toast('This seat is already booked')
         : [...prev, seatId]                             //  add seat
       )
 }
-
-
 
 
 
@@ -98,17 +76,13 @@ if (occupiedSeats.includes(seatId)) return toast('This seat is already booked')
           Array.from({ length: count }, (_, i) =>        //expalin in docs about this fiunctioon
            {
           const seatId = `${row}${i + 1}`;
-          return (
-                <button key={seatId} 
-                onClick={() => handleSeatClick(seatId)} 
-                className={
-                  `h-8 w-8 rounded border border-primary/60 cursor-pointer
-                ${selectedSeats.includes(seatId) && "bg-primary text-white"} 
-                ${occupiedSeats.includes(seatId) && "opacity-50"}`
-                }>
-                {seatId}
-                </button>
-           )
+            return (
+                      <button key={seatId} onClick={() => handleSeatClick(seatId)} className={`h-8 w-8 rounded border border-primary/60 cursor-pointer
+                      ${selectedSeats.includes(seatId) && "bg-primary text-white"} 
+                      ${occupiedSeats.includes(seatId) && "opacity-50"}`}>
+                        {seatId}
+                      </button>
+                    );
            }
            )
   
@@ -122,19 +96,73 @@ if (occupiedSeats.includes(seatId)) return toast('This seat is already booked')
 
 
 
-//run once after page load
+   //thsi get request ius made to bookingcontroller.js  occupiedseats function
+    const getOccupiedSeats = async ()=>{
+      try {
+        const { data } = await axios.get(`/api/booking/seats/${selectedTime.showId}`)
+        if (data.success) {
+          setOccupiedSeats(data.occupiedSeats)   // so for that show database  there will be occupiedseats    field   so  it will look like ===>    A1:12345  , A2:12345  , B1:12345   ,             B3:545454 , B7:545454     if  there were m2 users  who booked 5 seats in total(3+2)
+        }else{
+          toast.error(data.message)
+        }
+      } catch (error) {                 //reember catch block runs  when there is    server crash     or    network issue ...etc  like these cases   
+        console.log(error)
+      }
+    }
+
+
+
+
+
+  const bookTickets = async ()=>{
+    try {
+      if(!user) return toast.error('Please login to proceed')
+
+        if(!selectedTime || !selectedSeats.length) return toast.error('Please select a time and seats');
+
+        const {data} = await axios.post('/api/booking/create', {showId: selectedTime.showId ,  selectedSeats}, {headers: { Authorization: `Bearer ${await getToken()}` }});
+
+        if (data.success)     
+        {          
+          window.location.href = data.url;
+        }
+        else
+          {
+          toast.error(data.message)
+        }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+
+
+
+  
+
+//run once after page load to get all teh show timings of that particular date
 useEffect(() => {
   getShow()
 }, [])
 
 
+
+
+
+//for every time rerender  get occupied seats  on clicking each timimg
+  useEffect(()=>{
+    if(selectedTime){
+      getOccupiedSeats()
+    }
+  },[selectedTime])
+
+
+
+
+
 return show ? (
   // Main container where we will put available timings  and  seat select buttons
   <div className='flex flex-col md:flex-row px-6 md:px-16 lg:px-40 py-30 md:pt-50'>  {/* Flex container with vertical layout (flex-col ) , switches to horizontal(flex-row) on medium screens, and applies increasing horizontal/top padding based on screen size. */}
-
-
-
-
 
 
 
@@ -149,7 +177,7 @@ return show ? (
 
 
 /*
-see array looks like this;-
+see dattime array  looks like this;-
  "2025-07-24": [
         { "time": "2025-07-24T01:00:00.000Z", "showId": "68395b407f6329be2bb45bd1" },
         { "time": "2025-07-24T03:00:00.000Z", "showId": "68395b407f6329be2bb45bd2" },
@@ -162,7 +190,7 @@ so we are basically iterating the available times of  a particular date
           
           <div
             key={item.time}
-            onClick={() => setSelectedTime(item)} // set the selected time when clicked----->    remember here item means time  and show id   both  in  assets.js
+            onClick={() => setSelectedTime(item)} // set the selected time   which is the usestate   variable    when  we click it clicked----->    remember here item means time  and show id   both   mean basically the selectedtime  usesate here represent both time  and showid 
             className={`flex items-center gap-2 px-6 py-2 w-max rounded-r-md cursor-pointer transition    
               ${selectedTime?.time === item.time ? "bg-primary text-white" : "hover:bg-primary/20"}`    //understand thsi part i wrote in docs
               }
@@ -171,8 +199,6 @@ so we are basically iterating the available times of  a particular date
 
             {/* Clock icon next to time */}
             <ClockIcon className="w-4 h-4" />
-
-
 
             {/* Formatted time string */}
              <p className='text-sm'>{isoTimeFormat(item.time)}</p>  {/* itemtime   this  we will get time like this:---->    2025-07-26T01:00:00.000Z   ---->   so to convert it we will use isoTimeFormat  from lib/isoTimeFormat */}
@@ -196,7 +222,6 @@ so we are basically iterating the available times of  a particular date
   <h1 className='text-2xl font-semibold mb-4'>Select your seat</h1>     
   <img src={assets.screenImage} alt="screen" />                    {/* 🎥 Screen image  */}
   <p className='text-gray-400 text-sm mb-6'>SCREEN SIDE</p>      {/* text-sm  means smll text  and  mb-6 means   margin botooom  6*0.25= 1.5 rem*/}
-
 
 
 
@@ -232,12 +257,8 @@ so we are basically iterating the available times of  a particular date
 
 
 
-
-
-
-
   <button    //✅ Checkout Button at bottom
-    onClick={()=> navigate('/my-bookings')}
+   onClick={bookTickets}
     className='flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95'
   >
     Proceed to Checkout
@@ -278,7 +299,6 @@ export default SeatLayout
 .includes(...) means: =====>    “Does this array contain this item?”      =====>   It returns either true or false.
 
 🔹 Syntax:   array.includes(value)
-
 
 🔹 Example:
 const arr = ['A1', 'A2', 'A3'];

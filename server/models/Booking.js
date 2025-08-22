@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+ 
 const bookingSchema = new mongoose.Schema({
     user: {type: String, required: true, ref: 'User'},
     show: {type: String, required: true, ref: 'Show'},
@@ -8,18 +8,18 @@ const bookingSchema = new mongoose.Schema({
     isPaid: {type: Boolean,  default:false},
     paymentLink: {type: String},
 },{timestamps: true })
-
+ 
 const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;
 
-
+ 
 
 /*
 The models/booking.js file is for storing 
 booking records — basically, when a user 
 books seats for a specific show.So basically  It keeps track of Bookings table records which user reserved which seats for which show.
- 
+  
 
 Which user booked (user)
 Which show it was for (show)

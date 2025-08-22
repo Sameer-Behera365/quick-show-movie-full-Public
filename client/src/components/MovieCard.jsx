@@ -6,7 +6,7 @@ import { StarIcon } from 'lucide-react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import timeFormat from '../lib/timeFormat'
-// import { useAppContext } from '../context/AppContext'
+import { useAppContext } from '../context/AppContext'
 
 
 
@@ -15,7 +15,7 @@ import timeFormat from '../lib/timeFormat'
 const MovieCard = ({movie}) => {
 
     const navigate = useNavigate()
-    // const {image_base_url} = useAppContext()
+    const {image_base_url} = useAppContext()
 
 
 
@@ -28,7 +28,7 @@ const MovieCard = ({movie}) => {
       {/* image  on cliclicking we redirect  */}
 
       <img onClick={()=> {navigate(`/movies/${movie._id}`); scrollTo(0, 0)}}
-       src={movie.backdrop_path} alt="" className='rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer'/> {/*→ Makes an image with large rounded corners, fixed height (13rem), full width  it means complete width of parent div, cover-fit scaling, aligned to the bottom-right, and shows a pointer cursor on hover */}
+       src={image_base_url + movie.backdrop_path} alt="" className='rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer'/> {/*→ Makes an image with large rounded corners, fixed height (13rem), full width  it means complete width of parent div, cover-fit scaling, aligned to the bottom-right, and shows a pointer cursor on hover */}
 
 
 

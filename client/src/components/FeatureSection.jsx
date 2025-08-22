@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import BlurCircle from './BlurCircle'
 import MovieCard from './MovieCard'
 import { dummyShowsData } from '../assets/assets'        //for dummy data  we using right 
-// import { useAppContext } from '../context/AppContext'
+import { useAppContext } from '../context/AppContext'
 
 
 
@@ -17,7 +17,7 @@ import { dummyShowsData } from '../assets/assets'        //for dummy data  we us
 const FeaturedSection = () => {
 
     const navigate = useNavigate()
-    // const {shows } = useAppContext()
+    const {shows } = useAppContext()
 
   return (
     <div className='px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden'> {/*  remember width is 100percent by default when nothing is mentioned */} {/* Sets horizontal padding to 24px, 64px (≥768px), 96px (≥1024px), 176px (≥1280px), and hides overflow content:--content that goes outside the div's box will be clipped (not visible)  */}
@@ -45,9 +45,11 @@ const FeaturedSection = () => {
 
 
 
-      {/* movie cards section */}
-      <div className='flex flex-wrap max-sm:justify-center gap-8 mt-8'>    {/*look in small screens it will be wrapped in one colmn just to align evrything in one line colum  we do    justify-centre */}
-        {dummyShowsData.slice(0, 4).map((show)=>(                     //only 4 shows we added u can add more no prob in that 
+
+
+   {/* movie cards section */}
+        <div className='flex flex-wrap max-sm:justify-center gap-8 mt-8'>       {/*look in small screens it will be wrapped in one colmn just to align evrything in one line colum  we do    justify-centre */}
+        {shows.slice(0, 4).map((show)=>(               //only 4 shows we added u can add more no prob in that 
             <MovieCard key={show._id} movie={show}/>
         ))}
       </div>
@@ -87,7 +89,7 @@ const FeaturedSection = () => {
 
 
 
-
+  
 
     </div>
   )

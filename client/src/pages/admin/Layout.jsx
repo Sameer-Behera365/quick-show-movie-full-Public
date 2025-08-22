@@ -3,25 +3,24 @@ import AdminNavbar from '../../components/admin/AdminNavbar'
 import AdminSidebar from '../../components/admin/AdminSidebar'
 import { Outlet } from 'react-router-dom'
 import Loading from '../../components/Loading'
-// import { useAppContext } from '../../context/AppContext'
+import { useAppContext } from '../../context/AppContext'
 
 
 const Layout = () => {
 
-  // const {isAdmin, fetchIsAdmin} = useAppContext()
+  const {isAdmin, fetchIsAdmin} = useAppContext()
 
-  // useEffect(()=>{
-  //   fetchIsAdmin()
-  // },[])
+  useEffect(()=>{
+    fetchIsAdmin()
+  },[])
  
-  return  (
+  return  isAdmin? (
     <>
       <AdminNavbar />
-
  
       <div className='flex'>
 
-        <AdminSidebar/>
+      <AdminSidebar/>
 
         <div className='flex-1 px-4 py-10 md:px-10 h-[calc(100vh-64px)] overflow-y-auto'>     
             <Outlet />
@@ -31,7 +30,7 @@ const Layout = () => {
  
 
     </>
-  ) 
+  ) :<Loading/>
 }
 
 export default Layout
@@ -45,16 +44,13 @@ Outlet → placeholder where nested routes render.
 Example: /admin/add-shows will load <AddShows/> inside this outlet.
 
 
-
 When do we use <Outlet />?
 We use <Outlet /> only when we have nested routes.
 
-*/
 
 
 
 
-/*
 
 
 Classes meaning:-    

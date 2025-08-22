@@ -4,13 +4,27 @@ import User from "../models/User.js";
 
 
 // API to check if user is admin  
+/*
+
+When the frontend calls:----
+axios.get('/api/admin/is-admin', {
+  headers: { Authorization: `Bearer ${await getToken()}` }
+})
+
+req includes everything about the request:
+The method (GET)
+The URL/path (/api/admin/is-admin)
+The headers (like Authorization: Bearer <token>)
+
+*/
+
 export const isAdmin = async (req, res) =>{   
     res.json({success: true, isAdmin: true})
 }
 
 
 
-/*
+/* 
 
 API to get dashboard data     and  req  link  is  this  :-    http://localhost:3000/api/admin/dashboard
 this  function willl show  
@@ -93,7 +107,7 @@ export const getAllBookings = async (req, res) =>{
 }
 
 
-
+ 
 
 /*
 admin routes will look like :----

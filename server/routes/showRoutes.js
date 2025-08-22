@@ -18,7 +18,7 @@ Keeps server.js small – server.js just loads routes instead of having all the 
 
  
 
-
+ 
 
 
 import { addShow, getNowPlayingMovies, getShow, getShows } from "../controllers/showController.js";
@@ -42,7 +42,7 @@ export default showRouter;
 
 
 
-
+ 
 
 /*
 
